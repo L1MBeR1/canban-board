@@ -1,8 +1,10 @@
 import { ADD_COLUMN, EDIT_COLUMN, REMOVE_COLUMN } from '../actionsTypes/columnsActionsTypes'; // Импорт action types
 
+let nextId = 2; // Переменная для хранения следующего id
+
 export const addColumn = (title, color) => ({
   type: ADD_COLUMN,
-  payload: { title, color },
+  payload: { id: nextId++, title, color },
 });
 
 export const editColumn = (columnId, newTitle) => ({
@@ -16,30 +18,30 @@ export const removeColumn = (columnId) => ({
 });
 
 const initialState = {
-        columns: {
-          'column-1': {
-            id: 'column-1',
-            title: 'Нужно сделать',
-            color: '#FF5733',
-          },
-          'column-2': {
-            id: 'column-2',
-            title: 'В работе',
-            color: '#ffcf14',
-          },
-          'column-3': {
-            id: 'column-3',
-            title: 'Готово',
-            color: '#33FF57',
-          },
-        },
-        columnOrder: ['column-1', 'column-2', 'column-3'],
-    };
+  columns: {
+    '0': {
+      id: 0,
+      title: 'Нужно сделать',
+      color: '#FF5733',
+    },
+    '1': {
+      id: 1,
+      title: 'В работе',
+      color: '#ffcf14',
+    },
+    '2': {
+      id: 2,
+      title: 'Готово',
+      color: '#33FF57',
+    },
+  },
+  columnOrder: [0, 1, 2],
+};
 
 const columnReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_COLUMN: {
-      const newColumnId = `column-${Object.keys(state.columns).length + 1}`;
+      const newColumnId = nextId++;
       const newColumn = {
         id: newColumnId,
         title: action.payload.title,

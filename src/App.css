@@ -4,6 +4,7 @@
   --purple:#50118c;
   --black:#24292e;
   --grey:#303030;
+  --light-grey:#f0efef;
 
   --indigo: #50118C;
   --cornflower-blue: #7189ff;
@@ -27,11 +28,14 @@ body{
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-
+  overflow: hidden;
 }
 .main-content{
-  overflow: scroll;
+
+  box-sizing: border-box;
   display: flex;
+  overflow: scroll;
+  width: 100%;
   flex-direction: row;
   flex-grow: 1;
   gap:20px;
@@ -153,7 +157,7 @@ button{
   justify-content: center;
   padding: 10px 15px;
   border-radius: 10px;
-  width: 300px;
+  min-width: 300px;
   border: 1px dashed var(--cornflower-blue);
   color :var(--cornflower-blue);
   height: fit-content;
@@ -167,8 +171,34 @@ button{
   cursor: pointer;
 }
 .svg{
+  pointer-events: none;
   width: 20px;
   height: 20px;
   stroke: var(--black);
 
+}
+.column-actions{
+  display: flex;
+  flex-direction: column;
+  background-color: var(--white);
+  position: absolute;
+  z-index: 3;
+  font-size: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.column-rename{
+  cursor: pointer;
+  padding: 8px 12px;
+  &:hover{
+    background-color: var(--light-grey);
+  }
+}
+.column-delete{
+  cursor: pointer;
+  padding: 8px 12px;
+  color:red;
+  &:hover{
+    background-color: var(--light-grey);
+  }
 }
