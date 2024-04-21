@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux';
 import sidebarReducer from './sidebarReducer';
+import columnReducer from './columnsReducer';
 
 
 const rootReducer = combineReducers({
-  sidebar: sidebarReducer,
+  sidebarReducer,
+  columnReducer
 });
 
 export default rootReducer;

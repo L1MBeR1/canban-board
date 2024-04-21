@@ -1,19 +1,17 @@
-import './index.css';
-import App from './App';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client'; 
+import App from './App';
 import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit'; // Импорт функции configureStore из пакета @reduxjs/toolkit
-import rootReducer from './reducers/rootReducer'; // Ваш корневой редюсер
+import { configureStore } from '@reduxjs/toolkit';
+import rootReducer from './reducers/rootReducer';
 
-// Создание хранилища с помощью функции configureStore
 const store = configureStore({
   reducer: rootReducer
 });
 
-ReactDOM.render(
+const root = createRoot(document.getElementById('root'));
+root.render(
   <Provider store={store}>
     <App />
-  </Provider>,
-  document.getElementById('root')
+  </Provider>
 );

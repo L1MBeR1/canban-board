@@ -1,7 +1,24 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Task from './task.jsx'
+import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
 
 const Column=(props)=>{
+
+    const [tasks, setTasks] = useState([]);
+    const [actionsStatus, setActionsStatus] = useState(false);
+    const [action, setAction] = useState();
+    // Функция для добавления новой задачи
+    const addTask = () => {
+        // Создаем новую задачу (в данном примере просто объект с уникальным идентификатором)
+        const newTask = {
+            id: Math.random(), // Уникальный идентификатор
+            title: 'Новая задача',
+        };
+
+        // Добавляем новую задачу в список задач
+        setTasks(prevTasks => [...prevTasks, newTask]);
+    };
+
     function blendColors(color1, color2, percent) {
        
         const r1 = parseInt(color1.substring(1, 3), 16);
@@ -19,15 +36,29 @@ const Column=(props)=>{
        
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
-    
-    const blendedColor = blendColors('#f7f6fe', props.color, 0.025);
+    const TaskDrop=()=>{
+        
+    }
+    const blendedColor = blendColors('#f7f6fe', props.color, 0.05);
     return(
-        <div className="column" style={{ backgroundColor: blendedColor}}>
+        <div className="column" style={{ backgroundColor: blendedColor}} onDrop={TaskDrop} Droppable>
             <div className='column-color' style={{ backgroundColor: props.color }}/>
-            <div className='column-name'>{props.name}</div>
+            <header className='column-header'>
+                <div className='column-header-name'>{props.name}</div>
+                <div className='column-header-menu'>
+                    <Menu className='svg'></Menu>
+                </div>
+                </header>
             <div className='column-tasks'>
-                <Task></Task>
-                <button className='column-tasks-add'>+ Добавить задачу</button>
+
+                {tasks.map(task => (
+                    <Task key={task.id} title={task.title} />
+                ))}
+
+                <button className='column-tasks-add' onClick={addTask}>+ Добавить задачу</button>
+            </div>
+            <div className='column-actions'>
+
             </div>
         </div>
     );
