@@ -13,7 +13,7 @@ function App() {
   const dispatch = useDispatch();
 
   const handleAddColumn = () => {
-    dispatch(addColumn('Новая колонка', getRandomColor())); // Добавляем новую колонку с белым цветом
+    dispatch(addColumn('', getRandomColor())); // Добавляем новую колонку с белым цветом
   };
   const getRandomColor = () => {
     const letters = '0123456789ABCDEF';

@@ -121,9 +121,11 @@ body{
   justify-content: space-between;
   color: var(--black);
   padding: 10px 15px;
+  gap:20px
 }
 .column-header-name{
   height: fit-content;
+  overflow: hidden;
 }
 .column-tasks{
   /* margin-top: 10px; */
@@ -141,14 +143,27 @@ button{
     color: var(--dark-blue);
   }
 }
+.sidebar-projects{
+  padding-top: 20px;
+}
 .sidebar-projects-add{
+
   width: 100%;
   color: var(--cornflower-blue);
+  border: 1px dashed var(--cornflower-blue);
+  padding: 10px 15px;
+  border-radius: 10px;
+  &:hover{
+    border: 1px dashed var(--dark-blue);
+    color :var(--dark-blue);
+    background-color: rgba(255, 255, 255, 0.1);
+  }
 }
 .task{
   padding: 10px 15px;
   border-radius: 10px;
   background-color: var(--white);
+  
 }
 .column-add{
   display: flex;

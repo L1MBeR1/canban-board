@@ -1,41 +1,69 @@
-import React,{useState} from 'react';
-import { useDispatch } from 'react-redux';
-import { removeColumn } from '../reducers/columnsReducer.js';
+import React,{useState,useEffect,useRef} from 'react';
+import { useSelector,useDispatch } from 'react-redux';
+import { editColumn, removeColumn } from '../reducers/columnsReducer.js';
+import { addTask } from '../reducers/tasksReducer.js';
 import Task from './task.jsx'
 import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
 
 const Column=(props)=>{
 
-    const [tasks, setTasks] = useState([]);
+    console.log(useSelector(state => state.tasksReducer.tasks  ))
+    const tasks = useSelector(state => state.tasksReducer.tasks);
     const [actionsStatus, setActionsStatus] = useState(false);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
-    const [action, setAction] = useState();
+    const [name, setName] = useState(props.name);
+    const [NewName, setNewName] = useState('');
 
+    //const [OldName, setOldName] = useState('');
+
+    const inputRef = useRef(null);
+    //const [action, setAction] = useState();
+    useEffect(() => {
+        
+        if (props.name === '') {
+            inputRef.current.focus();
+        }
+    }, [props.name]);
     const dispatch = useDispatch();
+    useEffect(()=>{
+        dispatch(editColumn(props.id, name));
+    },[name])
+    // setAction(props.action);
+    // console.log(action)
+    
 
     const handleDeleteColumn = () => {
       dispatch(removeColumn(props.id)); 
     };
 
+    const handleInputBlur=()=>{
+        if (NewName.trim() !== '') {
+            setName(NewName);
+        }
 
+        setNewName('');
+    }
+    const handleInputChange = (e) => {
+        setNewName(e.target.value);
+    };
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            handleInputBlur(); 
+        }
+    };
+    const handleRenameColumn=()=>{
+        setName('')
+        setNewName(name);
+    }
 
-
-    // Функция для добавления новой задачи
     const addTask = () => {
-        // Создаем новую задачу (в данном примере просто объект с уникальным идентификатором)
-        const newTask = {
-            id: Math.random(), // Уникальный идентификатор
-            title: 'Новая задача',
-        };
-
-        // Добавляем новую задачу в список задач
-        setTasks(prevTasks => [...prevTasks, newTask]);
+        dispatch(addTask(props.id, ''));
     };
     const menuTrigger=(e)=>{
         setSelectCoords({ x: e.target.offsetLeft -90, y: e.target.offsetTop + e.target.clientHeight + 5 });
         setActionsStatus(!actionsStatus)
-        console.log(e)
+        //console.log(e)
     }
     const closeActions = () => {
         if (actionsStatus) {
@@ -62,26 +90,40 @@ const Column=(props)=>{
     const TaskDrop=()=>{
         
     }
-    const blendedColor = blendColors('#f7f6fe', props.color, 0.05);
+    const blendedColor = blendColors('#f7f6fe', props.color, 0.03);
     return(
         <div className="column" style={{ backgroundColor: blendedColor}} onDrop={TaskDrop} tabIndex="0" onBlur={closeActions} Droppable>
             <div className='column-color' style={{ backgroundColor: props.color }}/>
             <header className='column-header'>
-                <div  className='column-header-name'>{props.name}</div>
+            {name === '' ? ( 
+                    <input
+                        ref={inputRef}
+                        type="text"
+
+                        value={NewName}
+                        onChange={handleInputChange}
+                        onBlur={handleInputBlur}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Введите название"
+                        maxLength={40}
+                    />
+                ) : (
+                    <div className="column-header-name" onDoubleClick={handleRenameColumn}>{name}</div>
+                )}
                 <div className='column-header-menu' onClick={menuTrigger}>
                     <Menu className='svg'></Menu>
                 </div>
                 </header>
             <div className='column-tasks'>
 
-                {tasks.map(task => (
+                {Object.values(tasks).map(task => (
                     <Task key={task.id} title={task.title} />
                 ))}
 
                 <button className='column-tasks-add' onClick={addTask}>+ Добавить задачу</button>
             </div>
             <div className='column-actions' style={{ display: actionsStatus ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
-                <div className='column-rename'>Переименовать</div>
+                <div className='column-rename' onClick={handleRenameColumn}>Переименовать</div>
                 <div className='column-delete' onClick={handleDeleteColumn}>Удалить</div>
             </div>
         </div>
