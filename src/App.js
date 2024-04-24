@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect,useState} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addColumn } from './reducers/columnsReducer';
 import './App.css'
@@ -9,9 +9,13 @@ import AppHeader from './Components/header';
 
 function App() {
   console.log(useSelector(state => state.columnReducer.columns  ))
+  const [addPermision, setAddPermision] = useState(true);
   const columns = useSelector(state => state.columnReducer.columns);
   const dispatch = useDispatch();
-
+  useEffect(()=>{
+    const hasEmptyColumnName = Object.values(columns).some(column => column.title.trim() === '');
+    setAddPermision(!hasEmptyColumnName);
+  },[columns])
   const handleAddColumn = () => {
     dispatch(addColumn('', getRandomColor())); // Добавляем новую колонку с белым цветом
   };
@@ -33,7 +37,7 @@ function App() {
         {Object.values(columns).map(column => (
           <Column key={column.id} id={column.id} name={column.title} color={column.color} />
         ))}
-        <button className='column-add' onClick={handleAddColumn}>+ Добавить колонку</button>
+        {addPermision && (<button className='column-add' onClick={handleAddColumn}>+ Добавить колонку</button>)}
         </div>
       </div>
     </div>

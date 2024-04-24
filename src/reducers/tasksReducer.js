@@ -1,6 +1,6 @@
-import { ADD_TASK, EDIT_TASK, REMOVE_TASK } from '../actionsTypes/tasksActionTypes';
+import { ADD_TASK, EDIT_TASK, REMOVE_TASK, CHANGE_TASK_COLUMN } from '../actionsTypes/tasksActionTypes';
 
-let nextId = 3; // Установим начальное значение для следующего id
+let nextId = 0; // Установим начальное значение для следующего id
 
 export const addTask = (columnId, title) => ({
   type: ADD_TASK,
@@ -17,12 +17,13 @@ export const removeTask = (taskId) => ({
   payload: { taskId },
 });
 
+export const changeTaskColumn = (taskId, newColumnId) => ({
+  type: CHANGE_TASK_COLUMN,
+  payload: { taskId, newColumnId },
+});
+
 const initialState = {
-  tasks: {
-    // '0': { id: 0, columnId: 0, title: 'Сделать план проекта' },
-    // '1': { id: 1, columnId: 1, title: 'Написать код для функции X' },
-    // '2': { id: 2, columnId: 2, title: 'Подготовить презентацию' },
-  },
+  tasks: {},
 };
 
 const taskReducer = (state = initialState, action) => {
@@ -46,6 +47,19 @@ const taskReducer = (state = initialState, action) => {
           [taskId]: {
             ...state.tasks[taskId],
             title: newTitle,
+          },
+        },
+      };
+    }
+    case CHANGE_TASK_COLUMN: {
+      const { taskId, newColumnId } = action.payload;
+      return {
+        ...state,
+        tasks: {
+          ...state.tasks,
+          [taskId]: {
+            ...state.tasks[taskId],
+            columnId: newColumnId,
           },
         },
       };

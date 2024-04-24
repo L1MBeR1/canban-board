@@ -129,7 +129,10 @@ body{
 }
 .column-tasks{
   /* margin-top: 10px; */
-  padding: 0 15px 10px 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 8px 10px 8px;
 }
 button{
   cursor: pointer;
@@ -160,10 +163,10 @@ button{
   }
 }
 .task{
-  padding: 10px 15px;
+  overflow: hidden;
   border-radius: 10px;
   background-color: var(--white);
-  
+  box-shadow: 2px 2px 4px rgba(36, 41, 46, 0.05);
 }
 .column-add{
   display: flex;
@@ -183,12 +186,27 @@ button{
   }
 }
 .column-header-menu{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
+
+  
+  border-radius: 3px;
+  aspect-ratio: 1;
+  &:hover{
+    background-color: var(--pale-purple);
+  }
+}
+.task-header-menu{
+  margin-right: -3px;
 }
 .svg{
   pointer-events: none;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
+  aspect-ratio: 1;
   stroke: var(--black);
 
 }
@@ -216,4 +234,23 @@ button{
   &:hover{
     background-color: var(--light-grey);
   }
+}
+
+.task-header{
+  padding: 10px 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.task-expand{
+padding-top:3px;
+  width: 100%;
+  &:hover{
+    background-color: var(--pale-purple);
+  }
+}
+.task-expand svg{
+  stroke: var(--black);
+  width: 15px;
+  height: 15px;
 }

@@ -1,7 +1,7 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { editColumn, removeColumn } from '../reducers/columnsReducer.js';
-import { addTask } from '../reducers/tasksReducer.js';
+import { addTask,changeTaskColumn } from '../reducers/tasksReducer.js';
 import Task from './task.jsx'
 import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
 
@@ -10,14 +10,19 @@ const Column=(props)=>{
     console.log(useSelector(state => state.tasksReducer.tasks  ))
     const tasks = useSelector(state => state.tasksReducer.tasks);
     const [actionsStatus, setActionsStatus] = useState(false);
+    const [addPermision, setAddPermision] = useState(true);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
     const [name, setName] = useState(props.name);
     const [NewName, setNewName] = useState('');
 
     //const [OldName, setOldName] = useState('');
-
+    const tasksInCurrentColumn = Object.values(tasks).filter(task => task.columnId === props.id);
     const inputRef = useRef(null);
     //const [action, setAction] = useState();
+    useEffect(()=>{
+        const hasEmptyColumnName =tasksInCurrentColumn.some(task => task.title.trim() === '');
+        setAddPermision(!hasEmptyColumnName);
+      },[tasksInCurrentColumn])
     useEffect(() => {
         
         if (props.name === '') {
@@ -57,7 +62,7 @@ const Column=(props)=>{
         setNewName(name);
     }
 
-    const addTask = () => {
+    const handleAddTask = () => {
         dispatch(addTask(props.id, ''));
     };
     const menuTrigger=(e)=>{
@@ -87,12 +92,26 @@ const Column=(props)=>{
        
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
-    const TaskDrop=()=>{
+    const TaskDrop=(e)=>{
+        e.preventDefault();
+        const taskId = parseInt(e.dataTransfer.getData('taskId'));
+        const columnId = parseInt(e.dataTransfer.getData('columnId'));
+
+        // console.log(columnId,props.id)
+        if (columnId !== props.id){
+            dispatch(changeTaskColumn(taskId, props.id));
+        }
         
     }
-    const blendedColor = blendColors('#f7f6fe', props.color, 0.03);
+    const columnRef = useRef(null);
+
+    const handleDragOver = (e) => {
+        e.preventDefault();
+
+      };
+    const blendedColor = blendColors('#f7f6fe', props.color, 0.05);
     return(
-        <div className="column" style={{ backgroundColor: blendedColor}} onDrop={TaskDrop} tabIndex="0" onBlur={closeActions} Droppable>
+        <div className="column" ref={columnRef} style={{ backgroundColor: blendedColor}} onDrop={TaskDrop} tabIndex="0" onBlur={closeActions} Droppable onDragOver={handleDragOver} >
             <div className='column-color' style={{ backgroundColor: props.color }}/>
             <header className='column-header'>
             {name === '' ? ( 
@@ -116,11 +135,11 @@ const Column=(props)=>{
                 </header>
             <div className='column-tasks'>
 
-                {Object.values(tasks).map(task => (
-                    <Task key={task.id} title={task.title} />
+                {tasksInCurrentColumn.map(task => (
+                    <Task key={task.id} name={task.title} id={task.id} columnId={task.columnId}/>
                 ))}
 
-                <button className='column-tasks-add' onClick={addTask}>+ Добавить задачу</button>
+            {addPermision && (<button className='column-tasks-add' onClick={handleAddTask}>+ Добавить задачу</button>)}
             </div>
             <div className='column-actions' style={{ display: actionsStatus ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
                 <div className='column-rename' onClick={handleRenameColumn}>Переименовать</div>
