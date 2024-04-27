@@ -1,10 +1,10 @@
-import { ADD_COLUMN, EDIT_COLUMN, REMOVE_COLUMN } from '../actionsTypes/columnsActionsTypes'; // Импорт action types
+import { ADD_COLUMN, EDIT_COLUMN, REMOVE_COLUMN, UPDATE_GLOBAL_COLUMNS } from '../actionsTypes/columnsActionsTypes'; // Импорт action types
 
-let nextId = 2; // Переменная для хранения следующего id
+let nextId = 0; // Переменная для хранения следующего id
 
-export const addColumn = (title, color) => ({
+export const addColumn = (projectId, title, color) => ({
   type: ADD_COLUMN,
-  payload: { id: nextId++, title, color },
+  payload: { id: nextId++, projectId, title, color },
 });
 
 export const editColumn = (columnId, newTitle) => ({
@@ -17,35 +17,26 @@ export const removeColumn = (columnId) => ({
   payload: { columnId },
 });
 
+export const updateGlobalColumns = (allColumns) => ({
+  type: UPDATE_GLOBAL_COLUMNS,
+  payload: { allColumns },
+});
+
 const initialState = {
-  columns: {
-    '0': {
-      id: 0,
-      title: 'Нужно сделать',
-      color: '#FF5733',
-    },
-    '1': {
-      id: 1,
-      title: 'В работе',
-      color: '#ffcf14',
-    },
-    '2': {
-      id: 2,
-      title: 'Готово',
-      color: '#33FF57',
-    },
-  },
-  columnOrder: [0, 1, 2],
+  columns: {},
+  columnOrder: [],
 };
 
 const columnReducer = (state = initialState, action) => {
   switch (action.type) {
     case ADD_COLUMN: {
+      const { projectId, title, color } = action.payload;
       const newColumnId = nextId++;
       const newColumn = {
         id: newColumnId,
-        title: action.payload.title,
-        color: action.payload.color,
+        projectId,
+        title,
+        color,
       };
       return {
         ...state,
@@ -77,6 +68,14 @@ const columnReducer = (state = initialState, action) => {
         ...state,
         columns: updatedColumns,
         columnOrder: updatedColumnOrder,
+      };
+    }
+    case UPDATE_GLOBAL_COLUMNS: {
+      const { allColumns } = action.payload;
+      return {
+        ...state,
+        columns: allColumns,
+        columnOrder: Object.keys(allColumns), // Не преобразовываем ключи, чтобы сохранить порядок
       };
     }
     default:

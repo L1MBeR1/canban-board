@@ -5,8 +5,11 @@ import { addTask,changeTaskColumn } from '../reducers/tasksReducer.js';
 import Task from './task.jsx'
 import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
 
-const Column=(props)=>{
 
+
+
+const Column=(props)=>{
+    console.log(props)
     console.log(useSelector(state => state.tasksReducer.tasks  ))
     const tasks = useSelector(state => state.tasksReducer.tasks);
     const [actionsStatus, setActionsStatus] = useState(false);
