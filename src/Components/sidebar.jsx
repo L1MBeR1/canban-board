@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'; // Импортируем один раз useEffect и useRef
 import { ReactComponent as CloseSidebarIcon } from '../images/sidebar/sidebar-close-svgrepo-com.svg'; 
 import { ReactComponent as OpenSidebarIcon } from '../images/sidebar/sidebar-open-svgrepo-com.svg'; 
+import axios from 'axios';
 
 const Sidebar = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -16,6 +17,20 @@ const Sidebar = () => {
             setContentWidth(IconRef.current.offsetWidth);
         }
     }, [isOpen]);
+    
+
+    useEffect(() => {
+        const fetchProjects = async () => {
+            try {
+                const response = await axios.get('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/sonet_group.get.json');
+                console.log(response.data.result);
+            } catch (error) {
+                console.error('Ошибка при получении списка проектов:', error);
+            }
+        };
+
+        fetchProjects();
+    }, []);
 
     return (
         <aside className='sidebar' style={{ width: !isOpen ? contentWidth : 250+'px' }}>
