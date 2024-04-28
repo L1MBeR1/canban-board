@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 //import { editColumn, removeColumn } from '../reducers/columnsReducer.js';
 import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
 import { ReactComponent as Arrow } from '../images/task/arrow-bottom-1-svgrepo-com.svg'; 
-import { editTask, removeTask } from '../reducers/tasksReducer';
+// import { editTask, removeTask } from '../reducers/tasksReducer';
 
 const Task=(props)=>{
     console.log(props)
@@ -22,7 +22,7 @@ const Task=(props)=>{
     }, [props.name]);
     const dispatch = useDispatch();
     useEffect(()=>{
-        dispatch(editTask(props.id, name));
+        // dispatch(editTask(props.id, name));
     },[name])
     // setAction(props.action);
     // console.log(action)
@@ -31,7 +31,7 @@ const Task=(props)=>{
         setExpandedStatus(!expandedStatus)
       };
     const handleDeleteTask = () => {
-      dispatch(removeTask(props.id)); 
+    //   dispatch(removeTask(props.id)); 
     };
 
     const handleInputBlur=()=>{

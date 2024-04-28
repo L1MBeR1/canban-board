@@ -1,15 +1,17 @@
-import React,{useState,useEffect,useRef} from 'react';
+import React,{useState,useEffect,useRef,useForceUpdate} from 'react';
 import { useSelector,useDispatch } from 'react-redux';
 import { editColumn, removeColumn } from '../reducers/columnsReducer.js';
-import { addTask,changeTaskColumn } from '../reducers/tasksReducer.js';
+// import { addTask,changeTaskColumn } from '../reducers/tasksReducer.js';
 import Task from './task.jsx'
 import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
 import axios from 'axios';
-
+import { fetchTasks } from '../task.js';
 
 
 const Column=(props)=>{
     console.log(props)
+    const tasksObject = useSelector(state => state.tasksReducer.tasks);
+    console.log(tasksObject)
     //console.log(useSelector(state => state.tasksReducer.tasks  ))
     //const tasks = useSelector(state => state.tasksReducer.tasks);
     const [actionsStatus, setActionsStatus] = useState(false);
@@ -21,27 +23,43 @@ const Column=(props)=>{
     //const [OldName, setOldName] = useState('');
     //const tasksInCurrentColumn = Object.values(tasks).filter(task => task.columnId === props.id);
     const inputRef = useRef(null);
-    const [tasks, setTasks] = useState();
-    const fetchTasks = async () => {
-        try {
-          const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.list', {
-            filter: { STAGE_ID: props.id }
-          });
-          console.log(response.data.result);
-          setTasks(response.data.result);
-          setIsLoading(false); // Устанавливаем состояние загрузки в false после получения задач
-        } catch (error) {
-          console.error('Ошибка при получении списка задач:', error);
-          setIsLoading(false); // Устанавливаем состояние загрузки в false в случае ошибки
-        }
+    const [filteredTasks, setFilteredTasks] = useState([]);
+    const dispatch = useDispatch();
+    const fetchData = () => {
+        fetchTasks(dispatch);
       };
-    useEffect(() => {
-
     
-        if (props.id) {
-          fetchTasks();
+    // const fetchTasks = async (id) => {
+    //     try {
+    //       const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.list', {
+    //         filter: { STAGE_ID: id }
+    //       });
+    //       console.log(id,response.data.result);
+    //       setTasks(response.data.result);
+    //       setIsLoading(false); // Устанавливаем состояние загрузки в false после получения задач
+    //     } catch (error) {
+    //       console.error('Ошибка при получении списка задач:', error);
+    //       setIsLoading(false); // Устанавливаем состояние загрузки в false в случае ошибки
+    //     }
+    //   };
+    useEffect(() => {
+        setIsLoading(true);
+        const filtered = [];
+    
+        // Перебираем каждый массив в объекте и фильтруем его задачи по stageId
+        for (const key in tasksObject) {
+          if (Object.prototype.hasOwnProperty.call(tasksObject, key)) {
+            const tasksArray = tasksObject[key];
+            const filteredArray = tasksArray.filter(task => task.stageId === props.id);
+            filtered.push(...filteredArray);
+          }
         }
-      }, [props.id]);
+    
+        setFilteredTasks(filtered);
+        setIsLoading(false);
+      }, [tasksObject, props.id]); // Перезапускаем эффект при изменении tasks или props.id
+      
+
     // useEffect(()=>{
     //     const hasEmptyColumnName =tasksInCurrentColumn.some(task => task.title.trim() === '');
     //     setAddPermision(!hasEmptyColumnName);
@@ -52,7 +70,7 @@ const Column=(props)=>{
             inputRef.current.focus();
         }
     }, [props.name]);
-    const dispatch = useDispatch();
+
     useEffect(()=>{
         dispatch(editColumn(props.id, name));
     },[name])
@@ -86,7 +104,7 @@ const Column=(props)=>{
     }
 
     const handleAddTask = () => {
-        dispatch(addTask(props.id, ''));
+        // dispatch(addTask(props.id, ''));
     };
     const menuTrigger=(e)=>{
         setSelectCoords({ x: e.target.offsetLeft -90, y: e.target.offsetTop + e.target.clientHeight + 5 });
@@ -138,13 +156,18 @@ const Column=(props)=>{
         // if (columnId !== props.id){
         //     dispatch(changeTaskColumn(taskId, props.id));
         // }
-        moveTaskToStage(`${taskId}`, props.id);
+        moveTaskToStage(`${taskId}`, props.id).then(() => {
+            // fetchTasks(props.id);
+            // fetchTasks(`${columnId}`);
+            fetchTasks(dispatch);
+
+          });
     }
     const columnRef = useRef(null);
 
     const handleDragOver = (e) => {
         e.preventDefault();
-
+       
       };
     const blendedColor = blendColors('#f7f6fe', props.color, 0.05);
     return(
@@ -176,7 +199,7 @@ const Column=(props)=>{
             {isLoading ? (
                 <div>Загрузка задач...</div>
             ) : (
-                tasks.tasks.map(task => (
+                filteredTasks.map(task => (
                 <Task key={task.id} name={task.title} id={task.id} columnId={task.stageId}/>
                 ))
             )}
