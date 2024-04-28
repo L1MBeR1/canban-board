@@ -10,25 +10,14 @@ import AppHeader from './Components/header';
 
 function App() {
   console.log(useSelector(state => state.projectsReducer.projects ))
-  const [addPermision, setAddPermision] = useState(true);
   const projects = useSelector(state => state.projectsReducer.projects);
-  const dispatch = useDispatch();
+
   // useEffect(()=>{
   //   const hasEmptyColumnName = Object.values(columns).some(column => column && column.title && column.title.trim() === '');
 
   //   setAddPermision(!hasEmptyColumnName);
   // },[columns])
-  const handleAddColumn = () => {
-    dispatch(addColumn('', getRandomColor())); // Добавляем новую колонку с белым цветом
-  };
-  const getRandomColor = () => {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
-  };
+
   
   return (
     <div className="App">

@@ -7,6 +7,7 @@ import { ReactComponent as Arrow } from '../images/task/arrow-bottom-1-svgrepo-c
 import { editTask, removeTask } from '../reducers/tasksReducer';
 
 const Task=(props)=>{
+    console.log(props)
     const [actionsStatus, setActionsStatus] = useState(false);
     const [expandedStatus, setExpandedStatus] = useState(false);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });

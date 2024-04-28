@@ -4,28 +4,48 @@ import { editColumn, removeColumn } from '../reducers/columnsReducer.js';
 import { addTask,changeTaskColumn } from '../reducers/tasksReducer.js';
 import Task from './task.jsx'
 import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
-
+import axios from 'axios';
 
 
 
 const Column=(props)=>{
     console.log(props)
-    console.log(useSelector(state => state.tasksReducer.tasks  ))
-    const tasks = useSelector(state => state.tasksReducer.tasks);
+    //console.log(useSelector(state => state.tasksReducer.tasks  ))
+    //const tasks = useSelector(state => state.tasksReducer.tasks);
     const [actionsStatus, setActionsStatus] = useState(false);
     const [addPermision, setAddPermision] = useState(true);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
     const [name, setName] = useState(props.name);
     const [NewName, setNewName] = useState('');
-
+    const [isLoading, setIsLoading] = useState(true);
     //const [OldName, setOldName] = useState('');
-    const tasksInCurrentColumn = Object.values(tasks).filter(task => task.columnId === props.id);
+    //const tasksInCurrentColumn = Object.values(tasks).filter(task => task.columnId === props.id);
     const inputRef = useRef(null);
-    //const [action, setAction] = useState();
-    useEffect(()=>{
-        const hasEmptyColumnName =tasksInCurrentColumn.some(task => task.title.trim() === '');
-        setAddPermision(!hasEmptyColumnName);
-      },[tasksInCurrentColumn])
+    const [tasks, setTasks] = useState();
+    const fetchTasks = async () => {
+        try {
+          const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.list', {
+            filter: { STAGE_ID: props.id }
+          });
+          console.log(response.data.result);
+          setTasks(response.data.result);
+          setIsLoading(false); // Устанавливаем состояние загрузки в false после получения задач
+        } catch (error) {
+          console.error('Ошибка при получении списка задач:', error);
+          setIsLoading(false); // Устанавливаем состояние загрузки в false в случае ошибки
+        }
+      };
+    useEffect(() => {
+
+    
+        if (props.id) {
+          fetchTasks();
+        }
+      }, [props.id]);
+    // useEffect(()=>{
+    //     const hasEmptyColumnName =tasksInCurrentColumn.some(task => task.title.trim() === '');
+    //     setAddPermision(!hasEmptyColumnName);
+    //   },[tasksInCurrentColumn])
     useEffect(() => {
         
         if (props.name === '') {
@@ -95,16 +115,30 @@ const Column=(props)=>{
        
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
+    const moveTaskToStage = async (taskId, stageId) => {
+        try {
+            const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.update', {
+                taskId: taskId,
+                fields: {
+                    STAGE_ID: stageId
+                }
+            });
+            return response.data.result;
+        } catch (error) {
+            console.error('Ошибка при обновлении задачи:', error);
+            throw error;
+        }
+    };
     const TaskDrop=(e)=>{
         e.preventDefault();
         const taskId = parseInt(e.dataTransfer.getData('taskId'));
         const columnId = parseInt(e.dataTransfer.getData('columnId'));
 
-        // console.log(columnId,props.id)
-        if (columnId !== props.id){
-            dispatch(changeTaskColumn(taskId, props.id));
-        }
-        
+        console.log(columnId,props.id,taskId)
+        // if (columnId !== props.id){
+        //     dispatch(changeTaskColumn(taskId, props.id));
+        // }
+        moveTaskToStage(`${taskId}`, props.id);
     }
     const columnRef = useRef(null);
 
@@ -133,21 +167,26 @@ const Column=(props)=>{
                     <div className="column-header-name" onDoubleClick={handleRenameColumn}>{name}</div>
                 )}
                 <div className='column-header-menu' onClick={menuTrigger}>
-                    <Menu className='svg'></Menu>
+                    {props.id}
+                    {/* <Menu className='svg'></Menu> */}
                 </div>
                 </header>
             <div className='column-tasks'>
-
-                {tasksInCurrentColumn.map(task => (
-                    <Task key={task.id} name={task.title} id={task.id} columnId={task.columnId}/>
-                ))}
+                
+            {isLoading ? (
+                <div>Загрузка задач...</div>
+            ) : (
+                tasks.tasks.map(task => (
+                <Task key={task.id} name={task.title} id={task.id} columnId={task.stageId}/>
+                ))
+            )}
 
             {addPermision && (<button className='column-tasks-add' onClick={handleAddTask}>+ Добавить задачу</button>)}
             </div>
-            <div className='column-actions' style={{ display: actionsStatus ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
+            {/* <div className='column-actions' style={{ display: actionsStatus ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
                 <div className='column-rename' onClick={handleRenameColumn}>Переименовать</div>
                 <div className='column-delete' onClick={handleDeleteColumn}>Удалить</div>
-            </div>
+            </div> */}
         </div>
     );
 };
