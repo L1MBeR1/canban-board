@@ -57,6 +57,7 @@ const Column=(props)=>{
     
         setFilteredTasks(filtered);
         setIsLoading(false);
+        setAddPermision(true)
       }, [tasksObject, props.id]); // Перезапускаем эффект при изменении tasks или props.id
       
 
@@ -105,6 +106,7 @@ const Column=(props)=>{
 
     const handleAddTask = () => {
         // dispatch(addTask(props.id, ''));
+        setAddPermision(!addPermision)
     };
     const menuTrigger=(e)=>{
         setSelectCoords({ x: e.target.offsetLeft -90, y: e.target.offsetTop + e.target.clientHeight + 5 });
@@ -159,7 +161,7 @@ const Column=(props)=>{
         moveTaskToStage(`${taskId}`, props.id).then(() => {
             // fetchTasks(props.id);
             // fetchTasks(`${columnId}`);
-            fetchTasks(dispatch);
+            fetchData();
 
           });
     }
@@ -200,11 +202,13 @@ const Column=(props)=>{
                 <div>Загрузка задач...</div>
             ) : (
                 filteredTasks.map(task => (
-                <Task key={task.id} name={task.title} id={task.id} columnId={task.stageId}/>
+                <Task key={task.id} name={task.title} id={task.id} columnId={props.id} projectid={props.projectid} new={false}/>
                 ))
             )}
 
-            {addPermision && (<button className='column-tasks-add' onClick={handleAddTask}>+ Добавить задачу</button>)}
+            {addPermision ? (<button className='column-tasks-add' onClick={handleAddTask}>+ Добавить задачу</button>):(
+                <Task name='' columnId={props.id} projectid={props.projectid} new={true}></Task>
+            )}
             </div>
             {/* <div className='column-actions' style={{ display: actionsStatus ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
                 <div className='column-rename' onClick={handleRenameColumn}>Переименовать</div>

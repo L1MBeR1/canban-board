@@ -4,6 +4,8 @@ import { useDispatch } from 'react-redux';
 //import { editColumn, removeColumn } from '../reducers/columnsReducer.js';
 import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
 import { ReactComponent as Arrow } from '../images/task/arrow-bottom-1-svgrepo-com.svg'; 
+import axios from 'axios';
+import { fetchTasks } from '../task.js';
 // import { editTask, removeTask } from '../reducers/tasksReducer';
 
 const Task=(props)=>{
@@ -14,8 +16,57 @@ const Task=(props)=>{
     const [name, setName] = useState(props.name);
     const [NewName, setNewName] = useState('');
     const inputRef = useRef(null);
+    
+
+    const fetchData = () => {
+        fetchTasks(dispatch);
+      };
+    const deleteTask = async (taskId) => {
+        try {
+          const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.delete.json`, {
+            taskId: taskId
+          });
+      
+          // Обработка ответа, если необходимо
+          console.log('Задача успешно удалена:', response.data);
+        } catch (error) {
+          console.error('Ошибка при удалении задачи:', error);
+        }
+      };
+      const addTask = async (title, responsibleId,columnId,projectID) => {
+        try {
+          const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.add.json`, {
+              fields: {
+                TITLE: title,
+                STAGE_ID:columnId,
+                RESPONSIBLE_ID: responsibleId ,
+                GROUP_ID:projectID
+            }
+          });
+      
+          console.log("Новая задача успешно добавлена:", response);
+          // Возвращаем идентификатор новой задачи, если это необходимо
+          return response.data.taskId;
+        } catch (error) {
+          console.error("Ошибка при добавлении задачи:", error);
+          throw error; // Пробрасываем ошибку дальше, если это необходимо
+        }
+      };
+      const renameTask = async (taskId, name) => {
+        try {
+            const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.update', {
+                taskId: taskId,
+                fields: {
+                    TITLE: name
+                }
+            });
+            return response.data.result;
+        } catch (error) {
+            console.error('Ошибка при обновлении задачи:', error);
+            throw error;
+        }
+    };
     useEffect(() => {
-        
         if (props.name === '') {
             inputRef.current.focus();
         }
@@ -23,6 +74,9 @@ const Task=(props)=>{
     const dispatch = useDispatch();
     useEffect(()=>{
         // dispatch(editTask(props.id, name));
+        if (name === '') {
+            inputRef.current.focus();
+        }
     },[name])
     // setAction(props.action);
     // console.log(action)
@@ -32,17 +86,53 @@ const Task=(props)=>{
       };
     const handleDeleteTask = () => {
     //   dispatch(removeTask(props.id)); 
+        closeActions();
+        deleteTask(props.id)
+        
+        .then(() => {
+            fetchData(); 
+          })
+          .catch(error => {
+            console.error('Произошла ошибка при удалении задачи:', error);
+          });
     };
 
     const handleInputBlur=()=>{
         if (NewName.trim() !== '') {
             setName(NewName);
+            if (props.new==true){
+            addTask(NewName,1,props.columnId,props.projectid)
+            .then(() => {
+                fetchData(); 
+              })
+              .catch(error => {
+                console.error('Произошла ошибка при удалении задачи:', error);
+              });
+            }else{
+            renameTask(props.id,NewName)
+                .then(() => {
+                    fetchData(); 
+                  })
+                  .catch(error => {
+                    console.error('Произошла ошибка при удалении задачи:', error);
+                  });
+            }
         }
-
+        else{
+            fetchData(); 
+        }
         setNewName('');
+        // setDel(true).then(() => {
+        //     fetchData(); 
+        //   })
+        //   .catch(error => {
+        //     console.error('Произошла ошибка при удалении задачи:', error);
+        //   });
+
     }
     const handleInputChange = (e) => {
         setNewName(e.target.value);
+
     };
 
     const handleKeyDown = (e) => {
@@ -51,14 +141,15 @@ const Task=(props)=>{
         }
     };
     const handleRenameTask=()=>{
-        setName('')
+         
         setNewName(name);
+        setName('')
     }
 
     const menuTrigger=(e)=>{
-        setSelectCoords({ x: e.target.offsetLeft -90, y: e.target.offsetTop + e.target.clientHeight + 5 });
+        setSelectCoords({ x: e.pageX -90, y: e.pageY+ e.target.clientHeight });
         setActionsStatus(!actionsStatus)
-        //console.log(e)
+        console.log(e)
     }
     const closeActions = () => {
     if (actionsStatus) {

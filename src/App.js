@@ -36,11 +36,15 @@ function App() {
           <Sidebar></Sidebar>
       <div className='main'>
         <AppHeader></AppHeader>
-      <div className='main-content'>
+      <div className='main-content' style={{ justifyContent: Object.values(projects).length === 0 ? 'center' : 'normal' }}>
 
-      {Object.values(projects).map(project => (
-        <Project key={project.id} id={project.id} name={project.name} />
-      ))}
+      {Object.values(projects).length === 0 ? (
+            <div className='main-content-warn'>Выберите один из проектов</div>
+          ) : (
+            Object.values(projects).map(project => (
+              <Project key={project.id} id={project.id} name={project.name} />
+            ))
+          )}
         {/* {addPermision && (<button className='column-add' onClick={handleAddColumn}>+ Добавить колонку</button>)} */}
         </div>
       </div>

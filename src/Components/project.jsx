@@ -34,7 +34,7 @@ const Project = (props) => {
           <div className='project-loadings'>Идет загрузка...</div>
         ) : (
           stages.map(stage => (
-            <Column key={stage.ID} id={stage.ID} name={stage.TITLE} color={"#"+stage.COLOR} />
+            <Column key={stage.ID} id={stage.ID} name={stage.TITLE} color={"#"+stage.COLOR} projectid={props.id} />
           ))
         )}
         <div className='project-button'>

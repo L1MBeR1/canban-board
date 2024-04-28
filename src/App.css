@@ -34,6 +34,7 @@ hr {
   flex-direction: column;
   flex-grow: 1;
   overflow: hidden;
+  width: 70%;
 }
 .main-content{
 
@@ -224,6 +225,18 @@ button{
 
   display: flex;
 
+}
+.main-content-warn{
+    
+  border: dashed 3px var(--cornflower-blue);
+  border-radius: 30px;
+  width: fit-content;
+  height:  fit-content;
+  align-self: center;
+  justify-self: center;
+  color:var(--cornflower-blue);
+  padding: 40px;
+  font-size: 24px;
 }
 .column-header-menu{
 
