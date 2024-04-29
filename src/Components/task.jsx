@@ -4,8 +4,11 @@ import { useDispatch } from 'react-redux';
 //import { editColumn, removeColumn } from '../reducers/columnsReducer.js';
 import { ReactComponent as Menu } from '../images/column/menu-vertical-svgrepo-com.svg'; 
 import { ReactComponent as Arrow } from '../images/task/arrow-bottom-1-svgrepo-com.svg'; 
+import { ReactComponent as Comments} from '../images/task/comments-lines-svgrepo-com.svg';
+import { ReactComponent as Files} from '../images/task/files-svgrepo-com.svg';
 import axios from 'axios';
 import { fetchTasks } from '../task.js';
+import {selectTask } from '../reducers/selectedTaskReducer.js'
 // import { editTask, removeTask } from '../reducers/tasksReducer';
 
 const Task=(props)=>{
@@ -13,8 +16,9 @@ const Task=(props)=>{
     const [actionsStatus, setActionsStatus] = useState(false);
     const [expandedStatus, setExpandedStatus] = useState(false);
     const [selectCoords, setSelectCoords] = useState({ x: 0, y: 0 });
-    const [name, setName] = useState(props.name);
+    const [name, setName] = useState('');
     const [NewName, setNewName] = useState('');
+    const [files, setFiles] = useState();
     const inputRef = useRef(null);
     
 
@@ -66,6 +70,21 @@ const Task=(props)=>{
             throw error;
         }
     };
+    const getTaskFiles = async (taskId) => {
+      try {
+          const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/task.item.getfiles`, {
+              taskId: taskId
+          });
+          console.log('Файлы задачи:', response.data.result);
+          setFiles(response.data.result);
+      } catch (error) {
+          console.error('Ошибка при получении данных о файлах:', error);
+      }
+  };
+      useEffect(() => {
+        setName(props.name);
+        getTaskFiles(props.id);
+    }, [props]);
     useEffect(() => {
         if (props.name === '') {
             inputRef.current.focus();
@@ -82,7 +101,8 @@ const Task=(props)=>{
     // console.log(action)
     
     const handleExpandedStatus = () => {
-        setExpandedStatus(!expandedStatus)
+        // setExpandedStatus(!expandedStatus)
+        dispatch(selectTask(props.id))
       };
     const handleDeleteTask = () => {
     //   dispatch(removeTask(props.id)); 
@@ -100,7 +120,7 @@ const Task=(props)=>{
     const handleInputBlur=()=>{
         if (NewName.trim() !== '') {
             setName(NewName);
-            if (props.new==true){
+            if (props.new===true){
             addTask(NewName,1,props.columnId,props.projectid)
             .then(() => {
                 fetchData(); 
@@ -184,12 +204,25 @@ const Task=(props)=>{
                     </div>
                
             </header>
-            <div className='task-content'>
-                <div className='task-decription'>{props.description}</div>
-                <div className='task-files'></div>
-                <div className='task-comments'></div>
+            <div className='task-decription'>{props.description}</div>
+            <div className='task-iconsButton'>
+                  <div className='icons'>
+                    <div className='task-icon'>
+                      <Comments className='svg'/> {props.comments ? props.comments : 0}
+                    </div>
+                    <div className='task-icon'>
+                    <Files className='svg'/> {files ? files.length : 0}
+                      </div>
+                  </div>
+                  <div className='button'>
+                    <button onClick={handleExpandedStatus} className='task-expand'>
+                      Открыть
+                      <Arrow className='svg'></Arrow>
+                      </button>
+                  </div>
             </div>
-            <button onClick={handleExpandedStatus} className='task-expand'><Arrow className='svg'></Arrow></button>
+
+            
             <div className='column-actions' style={{ display: actionsStatus ? 'flex' : 'none', position: 'absolute', top: selectCoords.y, left: selectCoords.x }}>
                 <div className='column-rename' onClick={handleRenameTask}>Переименовать</div>
                 <div className='column-delete' onClick={handleDeleteTask}>Удалить</div>

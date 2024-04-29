@@ -54,11 +54,11 @@ const Column=(props)=>{
             filtered.push(...filteredArray);
           }
         }
-    
+        console.log(filtered)
         setFilteredTasks(filtered);
         setIsLoading(false);
         setAddPermision(true)
-      }, [tasksObject, props.id]); // Перезапускаем эффект при изменении tasks или props.id
+      }, [tasksObject]); // Перезапускаем эффект при изменении tasks или props.id
       
 
     // useEffect(()=>{
@@ -189,7 +189,9 @@ const Column=(props)=>{
                         maxLength={40}
                     />
                 ) : (
-                    <div className="column-header-name" onDoubleClick={handleRenameColumn}>{name}</div>
+                    <div className="column-header-name" 
+                    // onDoubleClick={handleRenameColumn}
+                    >{name}</div>
                 )}
                 <div className='column-header-menu' onClick={menuTrigger}>
                     {props.id}
@@ -202,7 +204,16 @@ const Column=(props)=>{
                 <div>Загрузка задач...</div>
             ) : (
                 filteredTasks.map(task => (
-                <Task key={task.id} name={task.title} id={task.id} columnId={props.id} projectid={props.projectid} new={false}/>
+                <Task 
+                key={task.id} 
+                name={task.title} 
+                id={task.id} 
+                columnId={props.id} 
+                projectid={props.projectid} 
+                new={false} 
+                comments={task.commentsCount}
+                description={task.description}
+                />
                 ))
             )}
 

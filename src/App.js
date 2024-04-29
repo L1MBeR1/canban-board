@@ -8,6 +8,7 @@ import axios from 'axios';
 import Project from './Components/project';
 import Sidebar from './Components/sidebar';
 import AppHeader from './Components/header';
+import TaskSidebar from './Components/taskSidebar';
 import { fetchTasks } from './task';
 function App() {
   console.log(useSelector(state => state.projectsReducer.projects ))
@@ -29,10 +30,15 @@ function App() {
 
   // Вы можете вызывать fetchData по необходимости, например, при монтировании компонента
   useEffect(() => {
-    fetchData();
+    // const fetchDataInterval = setInterval(() => {
+      fetchData();
+    // }, 5000); // Выполнять каждые 2 секунды
+
+    // return () => clearInterval(fetchDataInterval);
   }, []);
   return (
     <div className="App">
+      <div className='App-div'>
           <Sidebar></Sidebar>
       <div className='main'>
         <AppHeader></AppHeader>
@@ -48,6 +54,8 @@ function App() {
         {/* {addPermision && (<button className='column-add' onClick={handleAddColumn}>+ Добавить колонку</button>)} */}
         </div>
       </div>
+      </div>
+        <TaskSidebar />
     </div>
   );
 }
