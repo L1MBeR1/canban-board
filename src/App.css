@@ -435,11 +435,11 @@ border-radius: 10px 0 0 0 ;
   box-shadow: 2px 2px 8px rgba(36, 41, 46, 0.1);
   z-index: 1;
   background-color: var(--white);
+
   height: 100%;
   padding: 15px;
   padding-right: 20px;
   transition: width 0.2s ease;
-  
 }
 .taskSidebar-close {
   display: flex;
@@ -448,6 +448,7 @@ border-radius: 10px 0 0 0 ;
   justify-content: center;
   width: 20px;
   height: 20px;
+  max-height: 1080px;
 }
 .taskSidebar-description{
   display: flex;
@@ -516,6 +517,8 @@ stroke:var(--indigo);
   padding: 15px;
   gap:10px;
   overflow-y: scroll;
+  box-sizing: border-box;
+  max-height: 400px;
 
 }
 .taskSidebar-title{
@@ -549,6 +552,7 @@ stroke:var(--indigo);
  flex-direction: column;
  padding: 5px;
  flex-grow: 1;
+ overflow-y: scroll;
   
 }
 .taskSidebar-content-files{

@@ -280,7 +280,7 @@ const TaskSidebar = () => {
     };
 
     return (
-        <div className='taskSidebar' tabIndex="0" style={{ trs: data !== null ? '25%' : '0px' }} 
+        <div className='taskSidebar' tabIndex="0" style={{ width: data !== null ? '25%' : '0px' }} 
         // onBlur={closeSidebar} 
         ref={sidebar}>
             <div className='taskSidebar-close' onClick={closeSidebar}>
