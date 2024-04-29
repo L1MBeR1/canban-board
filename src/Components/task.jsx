@@ -83,7 +83,7 @@ const Task=(props)=>{
   };
       useEffect(() => {
         setName(props.name);
-        getTaskFiles(props.id);
+        // getTaskFiles(props.id);
     }, [props]);
     useEffect(() => {
         if (props.name === '') {
@@ -179,6 +179,7 @@ const Task=(props)=>{
     const handleDragStart = (e) => {
         e.dataTransfer.setData('taskId', props.id); // Устанавливаем идентификатор задачи
         e.dataTransfer.setData('columnId', props.columnId); // Устанавливаем идентификатор колонки
+        e.dataTransfer.setData('projectId', props.projectid);
         //console.log(props.columnId)
       };
     return(
@@ -207,12 +208,12 @@ const Task=(props)=>{
             <div className='task-decription'>{props.description}</div>
             <div className='task-iconsButton'>
                   <div className='icons'>
-                    <div className='task-icon'>
+                    {/* <div className='task-icon'>
                       <Comments className='svg'/> {props.comments ? props.comments : 0}
                     </div>
                     <div className='task-icon'>
                     <Files className='svg'/> {files ? files.length : 0}
-                      </div>
+                      </div> */}
                   </div>
                   <div className='button'>
                     <button onClick={handleExpandedStatus} className='task-expand'>

@@ -135,12 +135,13 @@ const Column=(props)=>{
        
         return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
     }
-    const moveTaskToStage = async (taskId, stageId) => {
+    const moveTaskToStage = async (taskId, stageId,projectid) => {
         try {
             const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.update', {
                 taskId: taskId,
                 fields: {
-                    STAGE_ID: stageId
+                    STAGE_ID: stageId,
+                    GROUP_ID:projectid
                 }
             });
             return response.data.result;
@@ -153,12 +154,12 @@ const Column=(props)=>{
         e.preventDefault();
         const taskId = parseInt(e.dataTransfer.getData('taskId'));
         const columnId = parseInt(e.dataTransfer.getData('columnId'));
-
-        console.log(columnId,props.id,taskId)
+        const projectId = parseInt(e.dataTransfer.getData('projectId'));
+        console.log(columnId,props.id,taskId,projectId)
         // if (columnId !== props.id){
         //     dispatch(changeTaskColumn(taskId, props.id));
         // }
-        moveTaskToStage(`${taskId}`, props.id).then(() => {
+        moveTaskToStage(`${taskId}`, props.id,projectId).then(() => {
             // fetchTasks(props.id);
             // fetchTasks(`${columnId}`);
             fetchData();

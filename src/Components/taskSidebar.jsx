@@ -4,6 +4,7 @@ import axios from 'axios';
 import { deleteTask } from '../reducers/selectedTaskReducer.js';
 import { ReactComponent as CloseSidebarIcon } from '../images/taskSidebar/close-svgrepo-com.svg'; 
 import { ReactComponent as EditIcon } from '../images/taskSidebar/edit-svgrepo-com.svg'; 
+import { ReactComponent as SendIcon } from '../images/taskSidebar/send-alt-svgrepo-com.svg'; 
 import File from '../Components/file.jsx'; // Подключаем компонент File
 import Comment from './comment.jsx';
 import { fetchTasks } from '../task.js';
@@ -226,7 +227,9 @@ const TaskSidebar = () => {
             try {
                 const uploadResult = await uploadFileToBitrix(file.name, fileContent);
                 console.log('Upload result:', uploadResult);
-    
+                if (uploadResult) {
+                    event.target.value = null; // Очистка значения импута после успешной загрузки файла
+                }
                 // Получение идентификатора загруженного файла из результатов загрузки
                 const fileId = uploadResult.ID;
     
@@ -277,7 +280,7 @@ const TaskSidebar = () => {
     };
 
     return (
-        <div className='taskSidebar' tabIndex="0" style={{ width: data !== null ? '25%' : '0' }} 
+        <div className='taskSidebar' tabIndex="0" style={{ trs: data !== null ? '25%' : '0px' }} 
         // onBlur={closeSidebar} 
         ref={sidebar}>
             <div className='taskSidebar-close' onClick={closeSidebar}>
@@ -310,7 +313,7 @@ const TaskSidebar = () => {
                     <div className='taskSidebar-content-item'>
                         <div className='taskSidebar-content-title'>Описание:</div>
                 
-                        {Redescription !== true && data.task.description !=='' ?(<div>{data.task.description}
+                        {Redescription !== true && data.task.description !=='' ?(<div className='taskSidebar-description'>{data.task.description}
                         <button className='taskSidebar-change' onClick={handleRedescription}>
                         <EditIcon className='svg'></EditIcon>
                         </button>
@@ -330,7 +333,7 @@ const TaskSidebar = () => {
                         }
 
                     </div>
-                    <div className='taskSidebar-content-item'>
+                    <div className='taskSidebar-content-files'>
                         <div className='taskSidebar-content-title'>Файлы:</div>
                         <div className='files'>
                             {files.length != 0 &&files.map((file, index) => (
@@ -338,7 +341,6 @@ const TaskSidebar = () => {
                             ))}
                         </div>
                         <input type="file" onChange={handleFileUpload}></input>
-                        <button>добавить</button>
                     </div>
                     <div className='taskSidebar-content-comments'>
                         <div className='taskSidebar-content-title'>Комментарии:</div>
@@ -352,8 +354,8 @@ const TaskSidebar = () => {
                                 />
                             ))}
                         </div>
-                        <div>
-                            <input
+                        <div className='addDiv'>
+                            <input className='addCommentInput' 
                             type="text"
                             value={Newcomment}
                             onChange={handleChangeComment}
@@ -362,8 +364,8 @@ const TaskSidebar = () => {
                             maxLength={200}>
                             
                             </input>
-                            <button>
-
+                            <button className='addCommentButton'  onClick={handleApplyNewComment}>
+                                <SendIcon className='svg'></SendIcon>
                             </button>
                         </div>
                     </div>
