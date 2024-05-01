@@ -5,6 +5,7 @@ import { deleteTask } from '../reducers/selectedTaskReducer.js';
 import { ReactComponent as CloseSidebarIcon } from '../images/taskSidebar/close-svgrepo-com.svg'; 
 import { ReactComponent as EditIcon } from '../images/taskSidebar/edit-svgrepo-com.svg'; 
 import { ReactComponent as SendIcon } from '../images/taskSidebar/send-alt-svgrepo-com.svg'; 
+import { ReactComponent as Confirm } from '../images/taskSidebar/confirm-so-svgrepo-com.svg';
 import File from '../Components/file.jsx'; // Подключаем компонент File
 import Comment from './comment.jsx';
 import { fetchTasks } from '../task.js';
@@ -280,9 +281,10 @@ const TaskSidebar = () => {
     };
 
     return (
-        <div className='taskSidebar' tabIndex="0" style={{ width: data !== null ? '25%' : '0px' }} 
+        <div className='taskSidebar' tabIndex="0" style={{ transform: data !== null ? 'translateX(0%)' : 'translateX(99.9%)' }} 
         // onBlur={closeSidebar} 
         ref={sidebar}>
+            
             <div className='taskSidebar-close' onClick={closeSidebar}>
                 <CloseSidebarIcon className='svg' />
             </div>
@@ -295,6 +297,7 @@ const TaskSidebar = () => {
                         </button>
                     </div>):
                     (
+                        <div>
                         <input
                         ref={inputName}
                         type="text"
@@ -304,7 +307,10 @@ const TaskSidebar = () => {
                         onKeyDown={handleKeyDownNewname}
                         placeholder="Введите название"
                         maxLength={40}
+                        className='taskSidebar-name-input'
                     />
+                    <Confirm className='svg'/>
+                    </div>
                     )
                     }
 
@@ -313,22 +319,27 @@ const TaskSidebar = () => {
                     <div className='taskSidebar-content-item'>
                         <div className='taskSidebar-content-title'>Описание:</div>
                 
-                        {Redescription !== true && data.task.description !=='' ?(<div className='taskSidebar-description'>{data.task.description}
-                        <button className='taskSidebar-change' onClick={handleRedescription}>
-                        <EditIcon className='svg'></EditIcon>
-                        </button>
+                        {Redescription !== true && data.task.description !=='' ?(
+                        <div className='taskSidebar-description'>{data.task.description}
+                            <button className='taskSidebar-change' onClick={handleRedescription}>
+                            <EditIcon className='svg'></EditIcon>
+                            </button>
                         </div>):
                         (
-                            <input
-                            ref={inputDescription}
-                            type="text"
-                            value={Newdescription}
-                            onChange={handleChangedescription}
-                            onBlur={handleApplyNewdescription}
-                            onKeyDown={handleKeyDownNewdescription}
-                            placeholder="Введите описание"
-                            maxLength={40}
-                        />
+                            <div className='taskSidebar-input'>
+
+                                <input
+                                ref={inputDescription}
+                                type="text"
+                                value={Newdescription}
+                                onChange={handleChangedescription}
+                                onBlur={handleApplyNewdescription}
+                                onKeyDown={handleKeyDownNewdescription}
+                                placeholder="Введите описание"
+                                maxLength={200}
+                                className='taskSidebar-description-input'/>
+                                <Confirm className='svg'/>
+                            </div>
                         )
                         }
 
@@ -336,8 +347,8 @@ const TaskSidebar = () => {
                     <div className='taskSidebar-content-files'>
                         <div className='taskSidebar-content-title'>Файлы:</div>
                         <div className='files'>
-                            {files.length != 0 &&files.map((file, index) => (
-                                <File key={index} fileName={file.NAME} fileType={file.NAME.split('.').pop()} />
+                            {files.length !== 0 &&files.map((file, index) => (
+                                <File key={index} fileName={file.NAME} fileType={file.NAME.split('.').pop()} fileUrl={file.DOWNLOAD_URL}/>
                             ))}
                         </div>
                         <input type="file" onChange={handleFileUpload}></input>
