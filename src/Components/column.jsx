@@ -137,7 +137,7 @@ const Column=(props)=>{
     }
     const moveTaskToStage = async (taskId, stageId,projectid) => {
         try {
-            const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.update', {
+            const response = await axios.post('https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/tasks.task.update', {
                 taskId: taskId,
                 fields: {
                     STAGE_ID: stageId,

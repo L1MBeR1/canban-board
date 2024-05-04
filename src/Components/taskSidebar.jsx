@@ -66,7 +66,7 @@ const TaskSidebar = () => {
     }, [Redescription]);
     const getTaskInfo = async (taskId) => {
         try {
-            const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.get.json`, {
+            const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/tasks.task.get.json`, {
                 taskId: taskId,
                 select: ['*']
             });
@@ -79,7 +79,7 @@ const TaskSidebar = () => {
     
     const getTaskFiles = async (taskId) => {
         try {
-            const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/task.item.getfiles`, {
+            const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/task.item.getfiles`, {
                 taskId: taskId
             });
             console.log('Файлы задачи:', response.data.result);
@@ -91,7 +91,7 @@ const TaskSidebar = () => {
         
     const getTaskComments = async (taskId) => {
         try {
-            const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/task.commentitem.getlist.json`, 
+            const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/task.commentitem.getlist.json`, 
                 [taskId, {'POST_DATE': 'asc'}]
             );
             console.log('Комменты задачи:', response.data.result);
@@ -102,7 +102,7 @@ const TaskSidebar = () => {
     };
     const renameTask = async (taskId, name) => {
         try {
-            const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.update', {
+            const response = await axios.post('https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/tasks.task.update', {
                 taskId: taskId,
                 fields: {
                     TITLE: name
@@ -116,7 +116,7 @@ const TaskSidebar = () => {
     };
     const redescriptionTask = async (taskId, decription) => {
         try {
-            const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.update', {
+            const response = await axios.post('https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/tasks.task.update', {
                 taskId: taskId,
                 fields: {
                     DESCRIPTION: decription
@@ -130,7 +130,7 @@ const TaskSidebar = () => {
     };
     const createComment = async (taskId, message) => {
         try {
-            const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/task.commentitem.add`, [
+            const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/task.commentitem.add`, [
                 taskId,
                 {
                     'POST_MESSAGE': message
@@ -253,7 +253,7 @@ const TaskSidebar = () => {
     };
     const attachFileToTask = async (taskId, fileId) => {
         try {
-            const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.files.attach`, {
+            const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/tasks.task.files.attach`, {
                 taskId: taskId,
                 fileId: fileId
             });
@@ -265,7 +265,7 @@ const TaskSidebar = () => {
     };
     const uploadFileToBitrix = async (fileName, fileContent) => {
         try {
-            const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/disk.storage.uploadfile`, {
+            const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/disk.storage.uploadfile`, {
                 id: 1, // ID хранилища
                 data: {
                     NAME: fileName

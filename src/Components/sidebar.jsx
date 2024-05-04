@@ -27,7 +27,7 @@ const Sidebar = () => {
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await axios.get('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/sonet_group.get.json');
+                const response = await axios.get('https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/sonet_group.get.json');
                 setProjects(response.data.result);
                 console.log(response.data);
             } catch (error) {

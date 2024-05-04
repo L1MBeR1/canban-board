@@ -8,7 +8,7 @@ const Project = (props) => {
   const [loading, setLoading] = useState(true);
   const fetchStages = async () => {
     try {
-      const response = await axios.get(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/task.stages.get.json?entityid=${props.id}`);
+      const response = await axios.get(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/task.stages.get.json?entityid=${props.id}`);
       const stagesData = response.data.result;
       const stagesArray = Array.isArray(stagesData) ? stagesData : Object.values(stagesData);
       console.log(stagesArray)

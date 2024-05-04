@@ -27,7 +27,7 @@ const Task=(props)=>{
       };
     const deleteTask = async (taskId) => {
         try {
-          const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.delete.json`, {
+          const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/tasks.task.delete.json`, {
             taskId: taskId
           });
       
@@ -39,7 +39,7 @@ const Task=(props)=>{
       };
       const addTask = async (title, responsibleId,columnId,projectID) => {
         try {
-          const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.add.json`, {
+          const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/tasks.task.add.json`, {
               fields: {
                 TITLE: title,
                 STAGE_ID:columnId,
@@ -58,7 +58,7 @@ const Task=(props)=>{
       };
       const renameTask = async (taskId, name) => {
         try {
-            const response = await axios.post('https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/tasks.task.update', {
+            const response = await axios.post('https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/tasks.task.update', {
                 taskId: taskId,
                 fields: {
                     TITLE: name
@@ -72,7 +72,7 @@ const Task=(props)=>{
     };
     const getTaskFiles = async (taskId) => {
       try {
-          const response = await axios.post(`https://b24-g6zt20.bitrix24.ru/rest/1/l9n2br54u6w01qyc/task.item.getfiles`, {
+          const response = await axios.post(`https://b24-9t4mro.bitrix24.ru/rest/1/uv94tc04ks798yhf/task.item.getfiles`, {
               taskId: taskId
           });
           console.log('Файлы задачи:', response.data.result);
